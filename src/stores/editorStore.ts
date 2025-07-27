@@ -24,9 +24,7 @@ interface EditorState {
   clearEditorContent: () => void;
   // Editor preferences
   showLineNumbers: boolean;
-  enableFolding: boolean;
   setShowLineNumbers: (show: boolean) => void;
-  setEnableFolding: (enable: boolean) => void;
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
@@ -74,6 +72,52 @@ function test() {
 }
 \`\`\`
 
+## Sticky Toolbar Test
+
+This content is designed to test the sticky formatting toolbar. The toolbar should remain visible when you scroll through this long document.
+
+### Section 1: Formatting Features
+
+The ContextPad editor now includes:
+
+1. **Sticky Formatting Toolbar** - Stays at the top while scrolling
+2. **Reorganized Header** - Line numbers toggle moved to header
+3. **Always-on Code Folding** - No need for a checkbox
+4. **Clean Interface** - Removed redundant labels
+
+### Section 2: More Content
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+#### Subsection A
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+#### Subsection B
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.
+
+### Section 3: Testing Scrolling
+
+The formatting toolbar should remain fixed at the top of the editor area as you scroll through this content. Try using the formatting buttons while scrolled down to verify they work correctly.
+
+\`\`\`python
+def sticky_toolbar_test():
+    """
+    This code block tests that syntax highlighting
+    and code folding work correctly with the new layout.
+    """
+    features = [
+        "Sticky toolbar",
+        "Clean header",
+        "Always-on folding",
+        "Better UX"
+    ]
+    return features
+\`\`\`
+
+### Section 4: Final Testing
+
+More content here to ensure we have enough to scroll through and properly test the sticky toolbar functionality.
+
 **Try switching to Preview mode to see the rendering!**`,
   setProjectContext: (content) => set({ projectContext: content }),
   setTemporaryNotes: (content) => set({ temporaryNotes: content }),
@@ -83,7 +127,5 @@ function test() {
   clearEditorContent: () => set({ editorContent: '' }),
   // Editor preferences
   showLineNumbers: false,
-  enableFolding: true,
   setShowLineNumbers: (show) => set({ showLineNumbers: show }),
-  setEnableFolding: (enable) => set({ enableFolding: enable }),
 }));

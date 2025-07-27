@@ -17,7 +17,7 @@ interface UseCodeMirrorOptions {
   placeholder?: string | undefined;
   readOnly?: boolean;
   showLineNumbers?: boolean;
-  enableFolding?: boolean;
+  enableFolding?: boolean; // Kept for backward compatibility, but ignored
 }
 
 export function useCodeMirror({
@@ -26,7 +26,8 @@ export function useCodeMirror({
   placeholder = '',
   readOnly = false,
   showLineNumbers = false,
-  enableFolding = true
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enableFolding: _enableFolding, // Ignored - folding always enabled for backward compatibility
 }: UseCodeMirrorOptions) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -58,7 +59,7 @@ export function useCodeMirror({
         ...defaultKeymap, 
         ...historyKeymap,
         ...searchKeymap,
-        ...(enableFolding ? foldKeymap : [])
+        ...foldKeymap
       ]),
       
       // Language features
@@ -81,10 +82,8 @@ export function useCodeMirror({
       );
     }
 
-    // Optional code folding
-    if (enableFolding) {
-      baseExtensions.push(foldGutter());
-    }
+    // Code folding (always enabled)
+    baseExtensions.push(foldGutter());
 
     // Placeholder handling
     if (placeholder) {
@@ -103,7 +102,7 @@ export function useCodeMirror({
     }
 
     return baseExtensions;
-  }, [readOnly, placeholder, showLineNumbers, enableFolding]);
+  }, [readOnly, placeholder, showLineNumbers]);
 
   // Handle content changes - stable callback using ref
   const onDocumentChange = useCallback((update: ViewUpdate) => {

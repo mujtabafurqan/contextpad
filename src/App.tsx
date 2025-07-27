@@ -28,9 +28,7 @@ function App() {
     clearTemporaryNotes,
     clearEditorContent,
     showLineNumbers,
-    enableFolding,
-    setShowLineNumbers,
-    setEnableFolding
+    setShowLineNumbers
   } = useEditorStore();
   
   const containerRef = useRef<HTMLDivElement>(null);
@@ -192,69 +190,64 @@ function App() {
         
         {/* Editor Panel */}
         <div 
-          className="bg-white flex flex-col"
+          className="bg-white flex flex-col min-h-0"
           style={{ width: `${editorPanelWidth}%` }}
         >
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h2 className="text-xl font-medium text-gray-800">Editor</h2>
-            <div className="flex items-center gap-2">
-              <ClearButton 
-                onClear={clearEditorContent}
-                disabled={!editorContent}
-              />
-              <button
-                onClick={() => mode !== 'edit' && toggleMode()}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  mode === 'edit'
-                    ? 'bg-blue-50 text-blue-700 border border-blue-100'
-                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-200'
-                }`}
-              >
-                <Edit3 size={16} />
-                Edit
-              </button>
-              <button
-                onClick={() => mode !== 'preview' && toggleMode()}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  mode === 'preview'
-                    ? 'bg-blue-50 text-blue-700 border border-blue-100'
-                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-200'
-                }`}
-              >
-                <Eye size={16} />
-                Preview
-              </button>
+            <div className="flex items-center gap-3">
+              {mode === 'edit' && (
+                <label className="flex items-center gap-2 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    checked={showLineNumbers}
+                    onChange={(e) => setShowLineNumbers(e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700">Show line numbers</span>
+                </label>
+              )}
+              <div className="flex items-center gap-2">
+                <ClearButton 
+                  onClear={clearEditorContent}
+                  disabled={!editorContent}
+                />
+                <button
+                  onClick={() => mode !== 'edit' && toggleMode()}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    mode === 'edit'
+                      ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                      : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-200'
+                  }`}
+                >
+                  <Edit3 size={16} />
+                  Edit
+                </button>
+                <button
+                  onClick={() => mode !== 'preview' && toggleMode()}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    mode === 'preview'
+                      ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                      : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-200'
+                  }`}
+                >
+                  <Eye size={16} />
+                  Preview
+                </button>
+              </div>
             </div>
           </div>
-          <div className="flex-1 p-6 overflow-auto">
+          <div className="flex-1 flex flex-col min-h-0">
             {mode === 'edit' ? (
-              <div className="mb-8">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Markdown Content
-                </label>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-4 text-sm">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={showLineNumbers}
-                        onChange={(e) => setShowLineNumbers(e.target.checked)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="text-gray-700">Show line numbers</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={enableFolding}
-                        onChange={(e) => setEnableFolding(e.target.checked)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="text-gray-700">Enable code folding</span>
-                    </label>
-                  </div>
-                  <div className="border border-gray-200 rounded-xl overflow-hidden">
-                    <FormattingToolbar editorRef={codeMirrorRef} />
+              <>
+                {/* Sticky Formatting Toolbar */}
+                <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+                  <FormattingToolbar editorRef={codeMirrorRef} />
+                </div>
+                
+                {/* Scrollable Editor Area */}
+                <div className="flex-1 overflow-auto p-6 min-h-0">
+                  <div className="border border-gray-200 rounded-xl overflow-hidden mb-4">
                     <CodeMirrorEditor
                       ref={codeMirrorRef}
                       value={editorContent}
@@ -270,29 +263,26 @@ Write your content with **bold text**, *italic text*, and [links](https://exampl
 - Along with other markdown features"
                       className="transition-all duration-200"
                       showLineNumbers={showLineNumbers}
-                      enableFolding={enableFolding}
+                      enableFolding={true}
                     />
                   </div>
-                </div>
-                <div className="flex items-center justify-between mt-2">
-                  <div className="text-sm text-gray-500">
-                    Use markdown syntax for formatting. Switch to Preview to see the rendered output.
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      Use markdown syntax for formatting. Switch to Preview to see the rendered output.
+                    </div>
+                    <CharacterCounter count={editorContent.length} />
                   </div>
-                  <CharacterCounter count={editorContent.length} />
                 </div>
-              </div>
+              </>
             ) : (
-              <div className="mb-8">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Preview
-                </label>
-                <div className="bg-white border border-gray-200 rounded-xl p-6 overflow-auto">
+              <div className="flex-1 overflow-auto p-6 min-h-0">
+                <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
                   <div 
                     className="prose max-w-none"
                     dangerouslySetInnerHTML={{ __html: renderedMarkdown }}
                   />
                 </div>
-                <div className="text-sm text-gray-500 mt-2">
+                <div className="text-sm text-gray-500">
                   This preview shows how your markdown will be rendered.
                 </div>
               </div>

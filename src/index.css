@@ -14,3 +14,12 @@
 .prose pre code {
   @apply bg-transparent px-0 py-0 text-gray-800 font-mono text-sm;
 }
+
+/* Ensure proper scrolling for CodeMirror editor */
+.cm-editor {
+  max-height: none;
+}
+
+.cm-scroller {
+  overflow: auto;
+}
